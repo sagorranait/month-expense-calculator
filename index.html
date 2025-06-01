@@ -9,6 +9,26 @@
   </head>
   <body>
     <form class="form-wizard">
+      <!-- .completed -->
+      <div class="resultat" hidden>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+          />
+        </svg>
+
+        <h3>Registration Successful!</h3>
+        <p>Your account has been created.</p>
+      </div>
+      <!-- /.completed -->
       <!-- .progress-container -->
       <div class="progress-container">
         <div class="progress"></div>
@@ -17,7 +37,6 @@
           <li class="current">Modell</li>
           <li>Inkomster</li>
           <li>Kostander</li>
-          <li>Resultat</li>
         </ol>
       </div>
       <!-- /.progress-container -->
@@ -46,19 +65,14 @@
                 <button type="button" id="add-control">+ Lägg till person</button>
             </div>
 
-          <div class="form-control">
+          <div id="multi-form" class="form-control">
               <div class="multi-form-control">
-                <input type="text" id="username" name="username[0]" placeholder="Name" required />
-                <input type="number" id="usersellery" name="usersellery[0]" placeholder="kr" required />
+                <input type="text" id="username-1" name="username[]" placeholder="Name" required />
+                <input type="number" id="usersellery-1" name="usersellery[0]" placeholder="kr" required />
               </div>
               <div class="multi-form-control">
-                <input type="text" id="username" name="username[1]" placeholder="Name" required />
-                <input type="number" id="usersellery" name="usersellery[1]" placeholder="kr" required />
-              </div>
-              <div class="multi-form-control">
-                <input type="text" id="username" name="username[2]" placeholder="Name" required />
-                <input type="number" id="usersellery" name="usersellery[2]" placeholder="kr" required />
-                <button type="button" id="remove-control">-</button>
+                <input type="text" id="username-2" name="username[1]" placeholder="Name" required />
+                <input type="number" id="usersellery-2" name="usersellery[1]" placeholder="kr" required />
               </div>
           </div>
         </div>
@@ -83,14 +97,6 @@
             />
           </div>
         </div>
-        <div class="step">
-          <h3>About</h3>
-
-          <div class="form-control">
-            <label for="bio">Bio</label>
-            <textarea name="bio" id="bio" rows="4" required></textarea>
-          </div>
-        </div>
       </div>
       <!-- /.steps-container -->
 
@@ -98,7 +104,7 @@
       <div class="controls">
         <button type="button" class="prev-btn">Tillbaka</button>
         <button type="button" class="next-btn">Nästa</button>
-        <button type="submit" class="submit-btn">Submit</button>
+        <button type="submit" class="submit-btn">Resultat</button>
       </div>
       <!-- /.controls -->
     </form>
