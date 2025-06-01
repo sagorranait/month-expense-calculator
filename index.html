@@ -1,13 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Month Expense Calculator</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    
-<script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multistep Form</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <form class="form-wizard">
+      <!-- .progress-container -->
+      <div class="progress-container">
+        <div class="progress"></div>
+
+        <ol>
+          <li class="current">Modell</li>
+          <li>Inkomster</li>
+          <li>Kostander</li>
+          <li>Resultat</li>
+        </ol>
+      </div>
+      <!-- /.progress-container -->
+
+      <!-- .steps-container -->
+      <div class="steps-container">
+        <div class="step">
+          <h3>Välj fördelningsmodell</h3>
+
+          <div class="form-control">
+            <label class="radio">
+                <input type="radio" name="costSplit" value="50-50" checked>              
+                <span>50/50. (Delar alla gemensamma kostnader helt lika.)</span>                
+            </label>
+          </div>
+          <div class="form-control">
+            <label class="radio">
+                <input type="radio" name="costSplit" value="proportionell">
+                <span>Proportionell. (Betalar samma procentandel som din inkomst.)</span>
+            </label>
+          </div>
+        </div>
+        <div class="step">
+            <div class="multi-form-header">
+                <h3>Inkomster</h3>
+                <button type="button" id="add-control">+ Lägg till person</button>
+            </div>
+
+          <div class="form-control">
+              <div class="multi-form-control">
+                <input type="text" id="username" name="username[0]" placeholder="Name" required />
+                <input type="number" id="usersellery" name="usersellery[0]" placeholder="kr" required />
+              </div>
+              <div class="multi-form-control">
+                <input type="text" id="username" name="username[1]" placeholder="Name" required />
+                <input type="number" id="usersellery" name="usersellery[1]" placeholder="kr" required />
+              </div>
+              <div class="multi-form-control">
+                <input type="text" id="username" name="username[2]" placeholder="Name" required />
+                <input type="number" id="usersellery" name="usersellery[2]" placeholder="kr" required />
+                <button type="button" id="remove-control">-</button>
+              </div>
+          </div>
+        </div>
+        <div class="step">
+          <h3>Account Information</h3>
+
+          <div class="form-control">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required />
+          </div>
+          <div class="form-control">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <div class="form-control">
+            <label for="confirm-password">Confirm Password</label>
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              required
+            />
+          </div>
+        </div>
+        <div class="step">
+          <h3>About</h3>
+
+          <div class="form-control">
+            <label for="bio">Bio</label>
+            <textarea name="bio" id="bio" rows="4" required></textarea>
+          </div>
+        </div>
+      </div>
+      <!-- /.steps-container -->
+
+      <!-- .controls -->
+      <div class="controls">
+        <button type="button" class="prev-btn">Tillbaka</button>
+        <button type="button" class="next-btn">Nästa</button>
+        <button type="submit" class="submit-btn">Submit</button>
+      </div>
+      <!-- /.controls -->
+    </form>
+  </body>
 </html>

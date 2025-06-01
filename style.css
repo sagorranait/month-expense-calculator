@@ -1,0 +1,281 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap");
+
+* {
+  font-family: "Outfit", sans-serif;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --main-color: #c41e67;
+  --dark-color: #a71555;
+  --step-color: #ced7e0;
+  --step-size: 32px;
+  --steps: 4;
+  --progress-width: calc((var(--steps) - 1) / var(--steps) * 100%);
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: lavender;
+  color: #333;
+}
+
+.form-wizard h1 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.form-wizard h3 {
+  margin-bottom: 16px;
+  font-size: clamp(1rem, 2vw + 1rem, 1.25rem);
+}
+
+.form-wizard label {
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.form-wizard input,
+.form-wizard textarea {
+  outline-color: var(--main-color);
+  border: 1px solid lightgray;
+  padding: 15px;
+  border-radius: 50px;
+  width: 100%;
+  font-size: 1rem;
+  text-align: start;
+}
+.form-control label.radio {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+.form-control label.radio:has(input[type="radio"]:checked) {
+  border: 1px solid var(--dark-color);
+  background: var(--dark-color);
+  color: #fff;
+}
+
+.multi-form-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.form-control label.radio input[type="radio"] {
+    width: 20px;
+    height: 20px; 
+}
+
+label.radio input[type="radio"]:checked {
+  accent-color: var(--main-color);
+}
+
+.form-wizard input[type="tel"] {
+  direction: inherit;
+}
+
+.form-wizard textarea {
+  resize: none;
+}
+
+.form-wizard button {
+  cursor: pointer;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 16px;
+  background-color: var(--main-color);
+  color: #fff;
+  font-size: 0.875rem;
+  transition: 0.3s;
+}
+
+.form-wizard button:active,
+.form-wizard button:hover {
+  background-color: var(--dark-color);
+}
+
+.form-wizard button:disabled {
+  opacity: 0.8;
+}
+
+.form-wizard button:focus {
+  outline-color: #333;
+}
+
+.form-wizard button[type="submit"] {
+  background-color: #333;
+}
+
+.form-wizard button[type="submit"]:hover,
+.form-wizard button[type="submit"]:active {
+  background-color: #444;
+}
+
+form {
+  margin-block: auto;
+}
+
+/* form styles */
+
+.form-wizard {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: min(800px, 90%);
+  box-shadow: 0 4px 16px rgba(167, 21, 84, 0.1);
+}
+
+.progress-container {
+  position: relative;
+}
+
+.progress-container::before {
+  content: "";
+  height: 4px;
+  width: var(--progress-width);
+  background-color: var(--step-color);
+  position: absolute;
+  top: calc(var(--step-size) / 2);
+  left: 50%;
+  translate: -50% -50%;
+}
+
+.progress-container .progress {
+  height: 4px;
+  width: var(--progress-width);
+  background-color: var(--main-color);
+  position: absolute;
+  top: calc(var(--step-size) / 2);
+  left: 50%;
+  translate: -50% -50%;
+  z-index: 2;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: 0.3s;
+}
+
+/* if page is rtl adjust the transform origin */
+html[dir="rtl"] .progress-container .progress {
+  transform-origin: right;
+}
+
+.progress-container ol {
+  list-style-type: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  counter-reset: step-number;
+  position: relative;
+  z-index: 3;
+}
+
+.progress-container li {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--step-color);
+  transition: 0.3s linear 0.3s;
+  text-align: center;
+  font-size: 0;
+}
+
+.progress-container li::before {
+  counter-increment: step-number;
+  content: counter(step-number);
+  background-color: var(--step-color);
+  width: var(--step-size);
+  height: var(--step-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  transition: 0.3s linear 0.3s;
+  font-size: 1rem;
+}
+
+@media (min-width: 480px) {
+  .progress-container li {
+    font-size: 1rem;
+    gap: 8px;
+  }
+}
+
+.progress-container li:where(.done, .current) {
+  color: #333;
+  font-weight: 500;
+}
+
+.progress-container li.done::before {
+  background-color: var(--main-color);
+}
+
+.progress-container li.current::before {
+  background-color: var(--main-color);
+  box-shadow: 0 0 0 3px rgba(167, 21, 84, 0.25);
+}
+
+.steps-container {
+  display: flex;
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+.step {
+  flex: 1 0 100%;
+  padding: 24px 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  height: fit-content;
+  display: grid;
+  gap: 8px;
+}
+
+.step.current {
+  opacity: 1;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  padding-inline: 8px;
+}
+
+.controls button {
+  flex: 1;
+}
+
+button#remove-control {
+    padding: 5px 10px;
+}
+
+.multi-form-control input {
+    width: 47%;
+}
+
+.multi-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.multi-form-header h3 {
+    margin: 0px;
+}
