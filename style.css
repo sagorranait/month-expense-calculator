@@ -41,6 +41,7 @@ body {
 }
 
 .form-wizard input,
+.form-wizard select,
 .form-wizard textarea {
   outline-color: var(--main-color);
   border: 1px solid lightgray;
@@ -263,7 +264,8 @@ button#remove-control {
     padding: 5px 10px;
 }
 
-.multi-form-control input {
+.multi-form-control input, 
+.multi-form-control select {
     width: 46%;
 }
 
@@ -294,4 +296,19 @@ button#remove-control {
 
 .resultat:not([hidden]) ~ * {
   display: none;
+}
+
+.form-wizard select {
+  background: url(/down-arrow.png) no-repeat right #fff;
+  -webkit-appearance: none;
+  background-position-x: 190px;
+  background-size: 28px;
+}
+
+.multi-kostnad-input {
+    width: 93%;
+}
+
+.multi-kostnad-input input, .multi-kostnad-input select {
+    width: 33%;
 }

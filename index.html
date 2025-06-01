@@ -77,24 +77,23 @@
           </div>
         </div>
         <div class="step">
-          <h3>Account Information</h3>
+          
+          <div class="multi-form-header">
+              <h3>Kostnader</h3>
+              <button type="button" id="add-kostnad">+ Lägg till kostnad</button>
+          </div>
 
-          <div class="form-control">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" required />
-          </div>
-          <div class="form-control">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required />
-          </div>
-          <div class="form-control">
-            <label for="confirm-password">Confirm Password</label>
-            <input
-              type="password"
-              id="confirm-password"
-              name="confirm-password"
-              required
-            />
+          <div id="multi-kostnad-form" class="form-control">
+              <div class="multi-form-control">
+                <div class="multi-kostnad-input">
+                  <input type="text" id="kostnad-1" name="kostnad[0]" placeholder="Kostnad" required />
+                  <input type="number" id="belopp-1" name="belopp[0]" placeholder="Belopp" required />
+                  <select name="betalare[0]" id="betalare">
+                    <option value="volvo">Volvo</option>
+                    <option value="saab">Saab</option>
+                  </select>
+                </div>
+              </div>
           </div>
         </div>
       </div>

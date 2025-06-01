@@ -26,6 +26,7 @@ class FormWizard {
     this.form.addEventListener("submit", (e) => this.submit(e));
 
     this.addDynamicInputLogic();
+    this.addDynamicKostnadInputLogic();
     this.updateUI();
   }
 
@@ -101,42 +102,56 @@ class FormWizard {
   }
 
   addDynamicInputLogic() {
-    const inputContainer = this.form.querySelector("#multi-form");
-    const addBtn = this.form.querySelector("#add-control");
+    let dynamicIndex = 2;
 
-    let dynamicIndex = 2; // Start from 2 since 0 and 1 are default
-
-    if (!inputContainer || !addBtn) return;
-
-    addBtn.addEventListener("click", () => {
+    document.getElementById("add-control").addEventListener("click", () => {
+      const wrapper = document.getElementById("multi-form");
       const inputGroup = document.createElement("div");
       inputGroup.className = "multi-form-control";
+      inputGroup.innerHTML = `
+        <input type="text" id="username-${dynamicIndex}" name="username[${dynamicIndex}]" placeholder="Name" required />
+        <input type="number" id="usersellery-${dynamicIndex}" name="usersellery[${dynamicIndex}]" placeholder="kr" required />
+        <button type="button" class="remove-btn">-</button>
+      `;
+      wrapper.appendChild(inputGroup);
 
-      const nameinput = document.createElement("input");
-      nameinput.type = "text";
-      nameinput.name = `username[${dynamicIndex}]`;
-      nameinput.placeholder = "Name";
-      nameinput.required = true;
-
-      const selleryinput = document.createElement("input");
-      selleryinput.type = "number";
-      selleryinput.name = `usersellery[${dynamicIndex}]`;
-      selleryinput.placeholder = "kr";
-      selleryinput.required = true;
-
-      const removeBtn = document.createElement("button");
-      removeBtn.type = "button";
-      removeBtn.textContent = "-";
-      removeBtn.addEventListener("click", () => {
-        inputContainer.removeChild(inputGroup);
+      inputGroup.querySelector(".remove-btn").addEventListener("click", () => {
+        inputGroup.remove();
+        this.updateUI(); // recalculate after removing
       });
 
-      inputGroup.appendChild(nameinput);
-      inputGroup.appendChild(selleryinput);
-      inputGroup.appendChild(removeBtn);
-      inputContainer.appendChild(inputGroup);
-      dynamicIndex++;
+      this.updateUI(); // recalculate after adding
     });
+  }
+
+  addDynamicKostnadInputLogic() {
+    let dynamicIndex = 1;
+
+    document.getElementById("add-kostnad").addEventListener("click", () => {
+      const wrapper = document.getElementById("multi-kostnad-form");
+      const inputGroup = document.createElement("div");
+      inputGroup.className = "multi-form-control";
+      inputGroup.innerHTML = `
+        <div class="multi-kostnad-input">
+          <input type="text" id="kostnad-1" name="kostnad[${dynamicIndex}]" placeholder="Kostnad" required />
+          <input type="number" id="belopp-1" name="belopp[${dynamicIndex}]" placeholder="Belopp" required />
+          <select name="betalare[${dynamicIndex}]" id="betalare">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+          </select>
+        </div>
+        <button type="button" class="remove-btn">-</button>
+      `;
+      wrapper.appendChild(inputGroup);
+
+      inputGroup.querySelector(".remove-btn").addEventListener("click", () => {
+        inputGroup.remove();
+        this.updateUI(); // recalculate after removing
+      });
+
+      this.updateUI(); // recalculate after adding
+    });
+    
   }
 }
 
