@@ -1,45 +1,45 @@
+// Optimized FormWizard class
 class FormWizard {
   constructor(formSelector) {
     this.form = document.querySelector(formSelector);
     this.steps = [...this.form.querySelectorAll(".step")];
     this.stepIndicators = [...this.form.querySelectorAll(".progress-container li")];
     this.progress = this.form.querySelector(".progress");
-    this.stepsContainer = this.form.querySelector(".steps-container");
+    this.stepsContainer = this.form.querySelector(".steps-container"); // ✅ restore this
     this.prevButton = this.form.querySelector(".prev-btn");
     this.nextButton = this.form.querySelector(".next-btn");
     this.submitButton = this.form.querySelector(".submit-btn");
-
     this.currentStep = 0;
-    document.documentElement.style.setProperty("--steps", this.stepIndicators.length);
 
+    document.documentElement.style.setProperty("--steps", this.stepIndicators.length);
     this.init();
   }
 
+
   init() {
     this.form.querySelectorAll("input, textarea").forEach(input =>
-      input.addEventListener("focus", (e) => this.handleFocus(e))
+      input.addEventListener("focus", e => this.handleFocus(e))
     );
-
-    this.prevButton.onclick = (e) => this.navigate(e, -1);
-    this.nextButton.onclick = (e) => this.navigate(e, 1);
-    this.form.onsubmit = (e) => this.handleSubmit(e);
+    this.prevButton.onclick = e => this.navigate(e, -1);
+    this.nextButton.onclick = e => this.navigate(e, 1);
+    this.form.onsubmit = e => this.handleSubmit(e);
 
     this.handleDynamicFields("add-control", "multi-form", this.getUserFields);
     this.handleDynamicFields("add-kostnad", "multi-kostnad-form", this.getKostnadFields);
 
-    this.updateUI();
+    this.form.querySelectorAll('input[name="costSplit"]').forEach(radio =>
+      radio.addEventListener("change", () => this.toggleProcentsatsFields())
+    );
 
-    // ✅ Attach username listeners after slight delay
     setTimeout(() => {
-      this.form.querySelectorAll('input[name^="username"]').forEach(input => {
-        console.log("Attaching input event to:", input.name);
-        input.addEventListener("input", () => this.updateBetalareDropdowns());
-      });
-
+      this.form.querySelectorAll('input[name^="username"]').forEach(input =>
+        input.addEventListener("input", () => this.updateBetalareDropdowns())
+      );
+      this.updateUI();
       this.updateBetalareDropdowns();
+      this.toggleProcentsatsFields();
     }, 50);
   }
-
 
   handleFocus(e) {
     const index = this.steps.findIndex(step => step.contains(e.target));
@@ -83,74 +83,59 @@ class FormWizard {
     e.preventDefault();
     if (!this.form.checkValidity()) return;
 
-    const formData = new FormData(this.form);
-    const raw = Object.fromEntries(formData);
+    const raw = Object.fromEntries(new FormData(this.form));
+    const costSplit = raw.costSplit;
+    const result = { costSplit, userInfo: [], kostnadInfo: [] };
 
-    const result = {
-      costSplit: raw.costSplit,
-      userInfo: [],
-      kostnadInfo: []
-    };
+    this.form.querySelectorAll("#multi-form .multi-form-control").forEach(row => {
+      const name = row.querySelector('input[name^="username"]')?.value.trim();
+      const value = Number(row.querySelector('input[name^="usersellery"]')?.value || 0);
+      const procentsats = costSplit === "50-50" ? "50" : "";
+      if (name) result.userInfo.push({ name, value, procentsats });
+    });
 
-    // ✅ Collect all username fields (both username[] and username[n])
-    const usernames = Object.entries(raw).filter(([key]) => key.startsWith("username[") || key === "username[]");
-    const usersellery = Object.entries(raw).filter(([key]) => key.startsWith("usersellery[") || key === "usersellery[]");
-
-    for (let i = 0; i < usernames.length; i++) {
-      result.userInfo.push({
-        name: usernames[i][1],
-        value: Number(usersellery[i]?.[1] || 0)
-      });
-    }
-
-    // ✅ Collect kostnadInfo (no change needed)
-    const kostnader = Object.entries(raw).filter(([key]) => key.startsWith("kostnad["));
-    const belopp = Object.entries(raw).filter(([key]) => key.startsWith("belopp["));
-    const betalare = Object.entries(raw).filter(([key]) => key.startsWith("betalare["));
-
-    for (let i = 0; i < kostnader.length; i++) {
-      result.kostnadInfo.push({
-        kostnad: kostnader[i][1],
-        belopp: Number(belopp[i]?.[1] || 0),
-        betalare: betalare[i]?.[1] || ''
-      });
-    }
+    Object.entries(raw).forEach(([key, val]) => {
+      const match = key.match(/^kostnad\[(\d+)\]$/);
+      if (match) {
+        const i = match[1];
+        result.kostnadInfo.push({
+          kostnad: val,
+          belopp: Number(raw[`belopp[${i}]`] || 0),
+          betalare: raw[`betalare[${i}]`] || ""
+        });
+      }
+    });
 
     console.log(result);
-
     this.submitButton.disabled = true;
     this.submitButton.textContent = "Resulterande...";
-
-    setTimeout(() => {
-      this.form.querySelector(".resultat").hidden = false;
-    }, 3000);
+    setTimeout(() => this.form.querySelector(".resultat").hidden = false, 3000);
   }
 
   updateBetalareDropdowns() {
-    const usernameInputs = this.form.querySelectorAll('input[name^="username"]');
-    const names = Array.from(usernameInputs)
+    const names = [...this.form.querySelectorAll('input[name^="username"]')]
       .map(input => input.value.trim())
       .filter(Boolean);
 
-    console.log("Detected usernames:", names);
-
-    const dropdowns = this.form.querySelectorAll('select[name^="betalare["]');
-    dropdowns.forEach(select => {
-      const currentValue = select.value;
-      select.innerHTML = '';
-      names.forEach(name => {
-        const option = document.createElement('option');
-        option.value = name;
-        option.textContent = name;
-        select.appendChild(option);
-      });
-      if (names.includes(currentValue)) {
-        select.value = currentValue;
-      }
+    this.form.querySelectorAll('select[name^="betalare["]').forEach(select => {
+      const current = select.value;
+      select.innerHTML = names.map(name => `<option value="${name}">${name}</option>`).join("");
+      if (names.includes(current)) select.value = current;
     });
   }
 
+  toggleProcentsatsFields() {
+    const isProportionell = this.form.querySelector('input[name="costSplit"]:checked')?.value === "proportionell";
 
+    this.form.querySelectorAll("#multi-form .multi-form-control").forEach(row => {
+      const input = row.querySelector('input[name^="procentsats"]');
+      if (input) {
+        const wrapper = input.parentElement;
+        wrapper.style.display = isProportionell ? "" : "none";
+        input.value = isProportionell ? input.value || "" : "";
+      }
+    });
+  }
 
   handleDynamicFields(buttonId, containerId, getFieldsFn) {
     let index = 1;
@@ -163,30 +148,33 @@ class FormWizard {
       div.innerHTML = getFieldsFn(index++);
       wrapper.appendChild(div);
       this.updateUI();
+
       if (buttonId === "add-control") {
-        const newUsernameInput = div.querySelector(`input[name^="username["]`);
-        if (newUsernameInput) {
-          newUsernameInput.addEventListener("input", () => {
-            this.updateBetalareDropdowns();
-          });
-        }
+        div.querySelectorAll('input[name^="username"]').forEach(input =>
+          input.addEventListener("input", () => this.updateBetalareDropdowns())
+        );
       }
-      this.updateBetalareDropdowns(); // ✅ Add this
+
+      this.updateBetalareDropdowns();
+      this.toggleProcentsatsFields();
     });
 
-    wrapper.addEventListener("click", (e) => {
+    wrapper.addEventListener("click", e => {
       if (e.target.classList.contains("remove-btn")) {
         e.target.closest(".multi-form-control")?.remove();
         this.updateUI();
-        this.updateBetalareDropdowns(); // ✅ Add this
+        this.updateBetalareDropdowns();
       }
     });
   }
 
   getUserFields(i) {
     return `
-      <input type="text" id="username-${i}" name="username[${i}]" placeholder="Name" required />
-      <input type="number" id="usersellery-${i}" name="usersellery[${i}]" placeholder="kr" required />
+      <input type="text" name="username[${i}]" placeholder="Name" required />
+      <input type="number" name="usersellery[${i}]" placeholder="kr" required />
+      <div class="procentsats-wrapper">
+        <input type="text" name="procentsats[${i}]" placeholder="%" maxlength="3" />
+      </div>
       <button type="button" class="remove-btn">-</button>
     `;
   }
@@ -196,17 +184,13 @@ class FormWizard {
       <div class="multi-kostnad-input">
         <input type="text" name="kostnad[${i}]" placeholder="Kostnad" required />
         <input type="number" name="belopp[${i}]" placeholder="Belopp" required />
-        <select name="betalare[${i}]">
-          <option value="volvo">Volvo</option>
-          <option value="saab">Saab</option>
-        </select>
+        <select name="betalare[${i}]"></select>
       </div>
       <button type="button" class="remove-btn">-</button>
     `;
   }
 }
 
-// Initialize the form wizard
 document.addEventListener("DOMContentLoaded", () => {
   const instance = new FormWizard(".form-wizard");
   document.querySelector(".form-wizard").formWizardInstance = instance;

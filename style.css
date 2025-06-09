@@ -267,7 +267,8 @@ button#remove-control {
 
 .multi-form-control input, 
 .multi-form-control select {
-    width: 46%;
+    width: 40%;
+    flex-grow: 1;
 }
 
 .multi-form-header {
@@ -327,4 +328,13 @@ button#remove-control {
 .multi-kostnad-input-label label {
     width: 33%;
     padding-left: 23px;
+}
+
+input#procentsats {
+    width: 100%;
+    text-align: center;
+}
+
+.procentsats-wrapper {
+    width: 8%;
 }
