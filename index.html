@@ -55,7 +55,7 @@
           <div class="form-control">
             <label class="radio">
                 <input type="radio" name="costSplit" value="proportionell">
-                <span>Proportionell. (Betalar samma procentandel som din inkomst.)</span>
+                <span>Proportionell. (Betalar en procentandel baserat på din inkomst.)</span>
             </label>
           </div>
         </div>
@@ -67,7 +67,7 @@
 
           <div id="multi-form" class="form-control">
               <div class="multi-form-control">
-                <input type="text" id="username-1" name="username[0]" placeholder="Name" required />
+                <input type="text" id="username-1" name="username[]" placeholder="Name" required />
                 <input type="number" id="usersellery-1" name="usersellery[0]" placeholder="kr" required />
               </div>
               <div class="multi-form-control">
@@ -84,13 +84,18 @@
           </div>
 
           <div id="multi-kostnad-form" class="form-control">
-              <div class="multi-form-control">
-                <div class="multi-kostnad-input">
-                  <input type="text" id="kostnad-1" name="kostnad[0]" placeholder="Kostnad" required />
-                  <input type="number" id="belopp-1" name="belopp[0]" placeholder="Belopp" required />
-                  <select name="betalare[0]" id="betalare"></select>
-                </div>
+            <div class="multi-kostnad-input-label">
+              <label for="kostnad-1">Kostnad</label>
+              <label for="belopp-1">Belopp</label>
+              <label for="betalare">Betalare</label>
+            </div>
+            <div class="multi-form-control">
+              <div class="multi-kostnad-input">
+                <input type="text" id="kostnad-1" name="kostnad[0]" placeholder="Kostnad" required />
+                <input type="number" id="belopp-1" name="belopp[0]" placeholder="Belopp" required />
+                <select name="betalare[0]" id="betalare"></select>
               </div>
+            </div>
           </div>
         </div>
       </div>

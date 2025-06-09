@@ -28,7 +28,18 @@ class FormWizard {
     this.handleDynamicFields("add-kostnad", "multi-kostnad-form", this.getKostnadFields);
 
     this.updateUI();
+
+    // ✅ Attach username listeners after slight delay
+    setTimeout(() => {
+      this.form.querySelectorAll('input[name^="username"]').forEach(input => {
+        console.log("Attaching input event to:", input.name);
+        input.addEventListener("input", () => this.updateBetalareDropdowns());
+      });
+
+      this.updateBetalareDropdowns();
+    }, 50);
   }
+
 
   handleFocus(e) {
     const index = this.steps.findIndex(step => step.contains(e.target));
@@ -116,10 +127,12 @@ class FormWizard {
   }
 
   updateBetalareDropdowns() {
-    const usernameInputs = this.form.querySelectorAll('input[name^="username["], input[name="username[]"]');
+    const usernameInputs = this.form.querySelectorAll('input[name^="username"]');
     const names = Array.from(usernameInputs)
       .map(input => input.value.trim())
       .filter(Boolean);
+
+    console.log("Detected usernames:", names);
 
     const dropdowns = this.form.querySelectorAll('select[name^="betalare["]');
     dropdowns.forEach(select => {
@@ -136,6 +149,8 @@ class FormWizard {
       }
     });
   }
+
+
 
   handleDynamicFields(buttonId, containerId, getFieldsFn) {
     let index = 1;
