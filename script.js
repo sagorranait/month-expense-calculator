@@ -73,7 +73,39 @@ class FormWizard {
     if (!this.form.checkValidity()) return;
 
     const formData = new FormData(this.form);
-    console.log(Object.fromEntries(formData));
+    const raw = Object.fromEntries(formData);
+
+    const result = {
+      costSplit: raw.costSplit,
+      userInfo: [],
+      kostnadInfo: []
+    };
+
+    // ✅ Collect all username fields (both username[] and username[n])
+    const usernames = Object.entries(raw).filter(([key]) => key.startsWith("username[") || key === "username[]");
+    const usersellery = Object.entries(raw).filter(([key]) => key.startsWith("usersellery[") || key === "usersellery[]");
+
+    for (let i = 0; i < usernames.length; i++) {
+      result.userInfo.push({
+        name: usernames[i][1],
+        value: Number(usersellery[i]?.[1] || 0)
+      });
+    }
+
+    // ✅ Collect kostnadInfo (no change needed)
+    const kostnader = Object.entries(raw).filter(([key]) => key.startsWith("kostnad["));
+    const belopp = Object.entries(raw).filter(([key]) => key.startsWith("belopp["));
+    const betalare = Object.entries(raw).filter(([key]) => key.startsWith("betalare["));
+
+    for (let i = 0; i < kostnader.length; i++) {
+      result.kostnadInfo.push({
+        kostnad: kostnader[i][1],
+        belopp: Number(belopp[i]?.[1] || 0),
+        betalare: betalare[i]?.[1] || ''
+      });
+    }
+
+    console.log(result);
 
     this.submitButton.disabled = true;
     this.submitButton.textContent = "Resulterande...";
@@ -81,6 +113,28 @@ class FormWizard {
     setTimeout(() => {
       this.form.querySelector(".resultat").hidden = false;
     }, 3000);
+  }
+
+  updateBetalareDropdowns() {
+    const usernameInputs = this.form.querySelectorAll('input[name^="username["], input[name="username[]"]');
+    const names = Array.from(usernameInputs)
+      .map(input => input.value.trim())
+      .filter(Boolean);
+
+    const dropdowns = this.form.querySelectorAll('select[name^="betalare["]');
+    dropdowns.forEach(select => {
+      const currentValue = select.value;
+      select.innerHTML = '';
+      names.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+      });
+      if (names.includes(currentValue)) {
+        select.value = currentValue;
+      }
+    });
   }
 
   handleDynamicFields(buttonId, containerId, getFieldsFn) {
@@ -94,20 +148,30 @@ class FormWizard {
       div.innerHTML = getFieldsFn(index++);
       wrapper.appendChild(div);
       this.updateUI();
+      if (buttonId === "add-control") {
+        const newUsernameInput = div.querySelector(`input[name^="username["]`);
+        if (newUsernameInput) {
+          newUsernameInput.addEventListener("input", () => {
+            this.updateBetalareDropdowns();
+          });
+        }
+      }
+      this.updateBetalareDropdowns(); // ✅ Add this
     });
 
     wrapper.addEventListener("click", (e) => {
       if (e.target.classList.contains("remove-btn")) {
         e.target.closest(".multi-form-control")?.remove();
         this.updateUI();
+        this.updateBetalareDropdowns(); // ✅ Add this
       }
     });
   }
 
   getUserFields(i) {
     return `
-      <input type="text" name="username[${i}]" placeholder="Name" required />
-      <input type="number" name="usersellery[${i}]" placeholder="kr" required />
+      <input type="text" id="username-${i}" name="username[${i}]" placeholder="Name" required />
+      <input type="number" id="usersellery-${i}" name="usersellery[${i}]" placeholder="kr" required />
       <button type="button" class="remove-btn">-</button>
     `;
   }
@@ -128,4 +192,7 @@ class FormWizard {
 }
 
 // Initialize the form wizard
-document.addEventListener("DOMContentLoaded", () => new FormWizard(".form-wizard"));
+document.addEventListener("DOMContentLoaded", () => {
+  const instance = new FormWizard(".form-wizard");
+  document.querySelector(".form-wizard").formWizardInstance = instance;
+});

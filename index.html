@@ -67,7 +67,7 @@
 
           <div id="multi-form" class="form-control">
               <div class="multi-form-control">
-                <input type="text" id="username-1" name="username[]" placeholder="Name" required />
+                <input type="text" id="username-1" name="username[0]" placeholder="Name" required />
                 <input type="number" id="usersellery-1" name="usersellery[0]" placeholder="kr" required />
               </div>
               <div class="multi-form-control">
@@ -88,10 +88,7 @@
                 <div class="multi-kostnad-input">
                   <input type="text" id="kostnad-1" name="kostnad[0]" placeholder="Kostnad" required />
                   <input type="number" id="belopp-1" name="belopp[0]" placeholder="Belopp" required />
-                  <select name="betalare[0]" id="betalare">
-                    <option value="volvo">Volvo</option>
-                    <option value="saab">Saab</option>
-                  </select>
+                  <select name="betalare[0]" id="betalare"></select>
                 </div>
               </div>
           </div>
