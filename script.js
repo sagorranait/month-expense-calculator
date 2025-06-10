@@ -136,7 +136,18 @@ class FormWizard {
       const color = colors[i % colors.length];
       const end = start + percent;
 
-      users.innerHTML += `<div class="card"><h3>${user.name}</h3><p class="amount">${user.value.toLocaleString("sv-SE")} kr</p><p class="label">kvar efter utgifter</p></div>`;
+      const costPercent = parseFloat(user.procentsats) / 100 || 0;
+      let remaining = user.value;
+
+      kostnadInfo.forEach(cost => {
+        const costShare = cost.belopp * (percent / 100);
+        remaining -= costShare;
+      });
+
+      console.log(Math.round(remaining));
+      
+
+      users.innerHTML += `<div class="card"><h3>${user.name}</h3><p class="amount">${Math.round(remaining).toLocaleString("sv-SE")} kr</p><p class="label">kvar efter utgifter</p></div>`;
       dots.innerHTML += `<span><span class="dot" style="background-color:${color}"></span>${user.name} (${user.procentsats}%)</span>`;
 
       gradient.push(`${color} ${start}% ${end}%`);
