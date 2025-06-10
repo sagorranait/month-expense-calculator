@@ -287,13 +287,12 @@ button#remove-control {
 }
 
 .resultat h3 {
-  margin-bottom: 8px;
+  margin-bottom: 0px;
 }
 
 .resultat svg {
-  width: 100px;
-  height: 100px;
-  stroke: yellowgreen;
+  width: 19px;
+  stroke: var(--main-color);
 }
 
 .resultat:not([hidden]) ~ * {
@@ -337,4 +336,198 @@ input#procentsats {
 
 .procentsats-wrapper {
     width: 8%;
+}
+
+.export-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 280px;
+}
+
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  font-family: sans-serif;
+  font-size: 14px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.export-button:hover {
+  background-color: #f9f9f9;
+}
+
+.export-button .icon {
+  font-size: 16px;
+  margin-bottom: -5px;
+}
+
+/* Optional specific styles */
+.export-button .icon.pdf {
+  color: red;
+}
+.export-button .icon.csv {
+  color: black;
+}
+.export-button .icon.link {
+  color: black;
+}
+
+.resultat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.resultat-users .card,
+.resultat-users .chart-card, 
+.resultat-cost-list {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.05);
+}
+
+.resultat-users .amount {
+  font-size: 27px;
+  font-weight: bold;
+  margin: 4px 0;
+}
+
+.resultat-users .label {
+  color: #666;
+  font-size: 14px;
+}
+
+.resultat-users .chart-card h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.resultat-users .donut-chart {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: conic-gradient(
+    #e30613 0% 60%,     /* Anna 60% */
+    #f8a5c2 60% 100%    /* Henrik 40% */
+  );
+}
+
+.resultat-users .donut-chart::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.resultat-users .percent {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.resultat-users .left {
+  left: -45px;
+}
+
+.resultat-users .right {
+  right: -45px;
+}
+
+.resultat-users .legend {
+  display: flex;
+  justify-content: space-around;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.resultat-users .dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 50%;
+}
+
+.resultat-users .henrik-dot {
+  background-color: #f8a5c2;
+}
+
+.resultat-users .anna-dot {
+  background-color: #e30613;
+}
+
+.resultat-users .user {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-grow: 1;
+}
+
+.resultat-users {
+    display: flex;
+    align-items: stretch;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.resultat-users .chart-card {
+    flex-grow: 1;
+}
+
+.resultat-users .card {
+    text-align: left;
+}
+
+.resultat-cost-list {
+    text-align: left;
+}
+
+.resultat-cost-list {
+    text-align: left;
+}
+
+.resultat-cost-list .cost span {
+    width: 60%;
+    display: inline-block;
+    background: red;
+    height: 5px;
+    border-radius: 50px;
+}
+
+.resultat-cost-list .costs .cost {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0px;
+}
+
+.resultat-cost-list .cost p {
+    width: 20%;
+}
+
+.resultat-cost-list .cost p:last-child {
+  text-align: right;
+}
+
+.resultat-cost-list h3 {
+    margin-bottom: 15px;
 }
