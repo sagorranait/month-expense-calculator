@@ -22,7 +22,7 @@
               </span>
               Exportera PDF
             </a>
-            <a class="export-button">
+            <a href="/fordelningsmodeller" class="export-button">
               <span class="icon link">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
@@ -33,51 +33,16 @@
           </div>
         </div>
         <div class="resultat-users">
-          <div class="user">
-            <div class="card">
-              <h3>Anna</h3>
-              <p class="amount">7 000 kr</p>
-              <p class="label">kvar efter utgifter</p>
-            </div>
-
-            <div class="card">
-              <h3>Henrik</h3>
-              <p class="amount">2 000 kr</p>
-              <p class="label">kvar efter utgifter</p>
-            </div>
-          </div>
-          
+          <div id="resultat-user" class="user"></div>          
           <div class="chart-card">
             <h3>Fördeining av gemensamma kostnader</h3>
-            <div class="donut-chart">
-              <span class="percent left">40%</span>
-              <span class="percent right">60%</span>
-            </div>
-            <div class="legend">
-              <span><span class="dot henrik-dot"></span>Henrik</span>
-              <span><span class="dot anna-dot"></span>Anna</span>
-            </div>
+            <div id="user-chart" class="donut-chart"></div>
+            <div id="legend-dots" class="legend"></div>
           </div>
         </div>
         <div class="resultat-cost-list">
           <h3>Kostnader per kategori</h3>
-          <div class="costs">
-            <div class="cost">
-              <p>Boende</p>
-              <span></span>
-              <p>9 000 kr</p>
-            </div>
-            <div class="cost">
-              <p>Mat</p>
-              <span></span>
-              <p>4 500 kr</p>
-            </div>
-            <div class="cost">
-              <p>Transport</p>
-              <span></span>
-              <p>4 500 kr</p>
-            </div>
-          </div>
+          <div id="costs-list" class="costs"></div>
         </div>
       </div>
       <!-- /.completed -->
@@ -119,14 +84,14 @@
 
           <div id="multi-form" class="form-control">
               <div class="multi-form-control">
-                <input type="text" id="username-1" name="username[]" value="Jennie" placeholder="Name" required />
+                <input type="text" id="username-1" name="username[]" pattern="^[A-Za-z]+$" value="Jennie" placeholder="Name" required />
                 <input type="number" id="usersellery-1" name="usersellery[0]" placeholder="kr" required />
                 <div class="procentsats-wrapper">
                   <input type="text" id="procentsats" name="procentsats[0]" placeholder="%" maxlength="3" />
                 </div>
               </div>
               <div class="multi-form-control">
-                <input type="text" id="username-2" name="username[1]" value="Alexander" placeholder="Name" required />
+                <input type="text" id="username-2" name="username[1]" pattern="^[A-Za-z]+$" value="Alexander" placeholder="Name" required />
                 <input type="number" id="usersellery-2" name="usersellery[1]" placeholder="kr" required />
                 <div class="procentsats-wrapper">
                   <input type="text" id="procentsats" name="procentsats[1]" placeholder="%" maxlength="3" />
@@ -149,7 +114,7 @@
             </div>
             <div class="multi-form-control">
               <div class="multi-kostnad-input">
-                <input type="text" id="kostnad-1" name="kostnad[0]" placeholder="Kostnad" required />
+                <input type="text" id="kostnad-1" name="kostnad[0]" placeholder="Kostnad" pattern="^[A-Za-z]+$" required />
                 <input type="number" id="belopp-1" name="belopp[0]" placeholder="Belopp" required />
                 <select name="betalare[0]" id="betalare"></select>
               </div>

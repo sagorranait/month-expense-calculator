@@ -79,6 +79,7 @@ class FormWizard {
     }
   }
 
+  // Form Submition
   handleSubmit(e) {
     e.preventDefault();
     if (!this.form.checkValidity()) return;
@@ -107,11 +108,50 @@ class FormWizard {
     });
 
     console.log(result);
+
+    this.showResultat(result);
     this.submitButton.disabled = true;
     this.submitButton.textContent = "Resulterande...";
-    setTimeout(() => this.form.querySelector(".resultat").hidden = false, 3000);
+    setTimeout(() => this.form.querySelector(".resultat").hidden = false, 2000);
   }
 
+  // Showing the Resultat
+  showResultat({ userInfo, kostnadInfo }) {
+    const dots = document.getElementById('legend-dots');
+    const chart = document.getElementById('user-chart');
+    const costs = document.getElementById('costs-list');
+    const users = document.getElementById('resultat-user');
+
+    const colors = ['#c41e67', '#a71555', '#ced7e0', '#470a0a', '#b21c0e'];
+
+    dots.innerHTML = '';
+    users.innerHTML = '';
+    costs.innerHTML = '';
+
+    let gradient = [];
+    let start = 0;
+    // User Information
+    userInfo.forEach((user, i) => {
+      const percent = parseFloat(user.procentsats);
+      const color = colors[i % colors.length];
+      const end = start + percent;
+
+      users.innerHTML += `<div class="card"><h3>${user.name}</h3><p class="amount">${user.value.toLocaleString("sv-SE")} kr</p><p class="label">kvar efter utgifter</p></div>`;
+      dots.innerHTML += `<span><span class="dot" style="background-color:${color}"></span>${user.name} (${user.procentsats}%)</span>`;
+
+      gradient.push(`${color} ${start}% ${end}%`);
+      start = end;
+    });
+    // Chart Color
+    chart.style.background = `conic-gradient(${gradient.join(', ')})`;
+    // Cost List
+    kostnadInfo.forEach((data) => {
+      costs.innerHTML += `<div class="cost"><p>${data.kostnad}</p><span></span><p>${data.belopp.toLocaleString("sv-SE")} kr</p></div>`;
+    });
+  }
+
+
+  // Select input functionality
   updateBetalareDropdowns() {
     const names = [...this.form.querySelectorAll('input[name^="username"]')]
       .map(input => input.value.trim())
@@ -124,6 +164,7 @@ class FormWizard {
     });
   }
 
+  // Show/Hide Prosentsats input fields
   toggleProcentsatsFields() {
     const isProportionell = this.form.querySelector('input[name="costSplit"]:checked')?.value === "proportionell";
 
@@ -137,6 +178,7 @@ class FormWizard {
     });
   }
 
+  // Add/Remove input field
   handleDynamicFields(buttonId, containerId, getFieldsFn) {
     let index = 1;
     const button = document.getElementById(buttonId);
@@ -168,9 +210,10 @@ class FormWizard {
     });
   }
 
+  // Add new User input 
   getUserFields(i) {
     return `
-      <input type="text" name="username[${i}]" placeholder="Name" required />
+      <input type="text" name="username[${i}]" pattern="^[A-Za-z]+$" placeholder="Name" required />
       <input type="number" name="usersellery[${i}]" placeholder="kr" required />
       <div class="procentsats-wrapper">
         <input type="text" name="procentsats[${i}]" placeholder="%" maxlength="3" />
@@ -179,10 +222,11 @@ class FormWizard {
     `;
   }
 
+  // Add new Cost input 
   getKostnadFields(i) {
     return `
       <div class="multi-kostnad-input">
-        <input type="text" name="kostnad[${i}]" placeholder="Kostnad" required />
+        <input type="text" name="kostnad[${i}]" pattern="^[A-Za-z]+$" placeholder="Kostnad" required />
         <input type="number" name="belopp[${i}]" placeholder="Belopp" required />
         <select name="betalare[${i}]"></select>
       </div>
