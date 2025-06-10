@@ -91,7 +91,7 @@ class FormWizard {
     this.form.querySelectorAll("#multi-form .multi-form-control").forEach(row => {
       const name = row.querySelector('input[name^="username"]')?.value.trim();
       const value = Number(row.querySelector('input[name^="usersellery"]')?.value || 0);
-      const procentsats = costSplit === "50-50" ? "50" : "";
+      const procentsats = costSplit === "50-50" ? "50" : row.querySelector('#procentsats')?.value;
       if (name) result.userInfo.push({ name, value, procentsats });
     });
 
