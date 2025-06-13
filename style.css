@@ -7,20 +7,12 @@
   box-sizing: border-box;
 }
 
-:root {
-  --main-color: #c41e67;
-  --dark-color: #a71555;
-  --step-color: #ced7e0;
-  --step-size: 32px;
-  --steps: 4;
-  --progress-width: calc((var(--steps) - 1) / var(--steps) * 100%);
-}
-
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   background-color: lavender;
   color: #333;
 }
@@ -43,7 +35,7 @@ body {
 .form-wizard input,
 .form-wizard select,
 .form-wizard textarea {
-  outline-color: var(--main-color);
+  outline-color: #c41e67;
   border: 1px solid lightgray;
   padding: 15px;
   border-radius: 50px;
@@ -63,8 +55,8 @@ body {
     margin-top: 10px;
 }
 .form-control label.radio:has(input[type="radio"]:checked) {
-  border: 1px solid var(--dark-color);
-  background: var(--dark-color);
+  border: 1px solid #a71555;
+  background: #a71555;
   color: #fff;
 }
 
@@ -81,7 +73,7 @@ body {
 }
 
 label.radio input[type="radio"]:checked {
-  accent-color: var(--main-color);
+  accent-color: #c41e67;
 }
 
 .form-wizard input[type="tel"] {
@@ -97,7 +89,7 @@ label.radio input[type="radio"]:checked {
   border: none;
   border-radius: 50px;
   padding: 10px 16px;
-  background-color: var(--main-color);
+  background-color: #c41e67;
   color: #fff;
   font-size: 0.875rem;
   transition: 0.3s;
@@ -105,7 +97,7 @@ label.radio input[type="radio"]:checked {
 
 .form-wizard button:active,
 .form-wizard button:hover {
-  background-color: var(--dark-color);
+  background-color: #a71555;
 }
 
 .form-wizard button:disabled {
@@ -125,7 +117,7 @@ label.radio input[type="radio"]:checked {
   background-color: #444;
 }
 
-form {
+.form-wizard form {
   margin-block: auto;
 }
 
@@ -146,20 +138,20 @@ form {
 .progress-container::before {
   content: "";
   height: 4px;
-  width: var(--progress-width);
-  background-color: var(--step-color);
+  width: calc((3.8 - 1) / 4 * 100%);
+  background-color: #ced7e0;
   position: absolute;
-  top: calc(var(--step-size) / 2);
+  top: calc(32px / 2);
   left: 50%;
   translate: -50% -50%;
 }
 
 .progress-container .progress {
   height: 4px;
-  width: var(--progress-width);
-  background-color: var(--main-color);
+  width: calc((3.8 - 1) / 4 * 100%);
+  background-color: #c41e67;
   position: absolute;
-  top: calc(var(--step-size) / 2);
+  top: calc(32px / 2);
   left: 50%;
   translate: -50% -50%;
   z-index: 2;
@@ -188,7 +180,7 @@ html[dir="rtl"] .progress-container .progress {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--step-color);
+  color: #ced7e0;
   transition: 0.3s linear 0.3s;
   text-align: center;
   font-size: 0;
@@ -197,9 +189,9 @@ html[dir="rtl"] .progress-container .progress {
 .progress-container li::before {
   counter-increment: step-number;
   content: counter(step-number);
-  background-color: var(--step-color);
-  width: var(--step-size);
-  height: var(--step-size);
+  background-color: #ced7e0;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -222,11 +214,11 @@ html[dir="rtl"] .progress-container .progress {
 }
 
 .progress-container li.done::before {
-  background-color: var(--main-color);
+  background-color: #c41e67;
 }
 
 .progress-container li.current::before {
-  background-color: var(--main-color);
+  background-color: #c41e67;
   box-shadow: 0 0 0 3px rgba(167, 21, 84, 0.25);
 }
 
@@ -292,7 +284,7 @@ button#remove-control {
 
 .resultat svg {
   width: 19px;
-  stroke: var(--main-color);
+  stroke: #c41e67;
 }
 
 .resultat:not([hidden]) ~ * {
@@ -389,13 +381,14 @@ input#procentsats {
     margin-bottom: 20px;
 }
 
-.resultat-users .card,
+#resultat-user .card,
 .resultat-users .chart-card, 
 .resultat-cost-list {
   background: #fff;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 1px 20px rgba(0, 0, 0, 0.05);
+  flex-grow: 1;
 }
 
 .resultat-users .amount {
@@ -466,18 +459,18 @@ input#procentsats {
   background-color: #e30613;
 }
 
-.resultat-users .user {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex-grow: 1;
+#resultat-user {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 40%;
 }
 
 .resultat-users {
-    display: flex;
-    align-items: stretch;
-    gap: 15px;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: stretch;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .resultat-users .chart-card {
@@ -529,4 +522,50 @@ input#procentsats {
 #legend-dots span {
     display: flex;
     align-items: center;
+}
+/* PDF CSS */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.budget-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  margin-top: 5px;
+  font-size: 0.95rem;
+}
+
+.budget-table th,
+.budget-table td {
+  border: 1px solid #c41e67;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.budget-table th {
+  background-color: #ff328c70;
+  font-weight: bold;
+}
+
+.budget-table tfoot td {
+  background-color: #ff328c70;
+  font-weight: bold;
+}
+.budget-table th:nth-child(2),
+.budget-table th:nth-child(3),
+.budget-table th:nth-child(4),
+.budget-table td:nth-child(2),
+.budget-table td:nth-child(3),
+.budget-table td:nth-child(4),
+.budget-table tfoot td:nth-child(2),
+.budget-table tfoot td:nth-child(3),
+.budget-table tfoot td:nth-child(4) {
+  text-align: center;
+}
+
+.resultat-pdf {
+    width: 100%;
+    background: transparent;
 }

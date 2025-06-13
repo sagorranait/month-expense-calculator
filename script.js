@@ -1,6 +1,8 @@
 // Optimized FormWizard class
 class FormWizard {
   constructor(formSelector) {
+    this.userIndex = 1;
+    this.kostnadIndex = 1;
     this.form = document.querySelector(formSelector);
     this.steps = [...this.form.querySelectorAll(".step")];
     this.stepIndicators = [...this.form.querySelectorAll(".progress-container li")];
@@ -109,6 +111,10 @@ class FormWizard {
 
     console.log(result);
 
+    this.userInfo = result.userInfo;
+    this.kostnadInfo = result.kostnadInfo;
+
+
     this.showResultat(result);
     this.submitButton.disabled = true;
     this.submitButton.textContent = "Resulterande...";
@@ -157,8 +163,11 @@ class FormWizard {
     chart.style.background = `conic-gradient(${gradient.join(', ')})`;
     // Cost List
     kostnadInfo.forEach((data) => {
-      costs.innerHTML += `<div class="cost"><p>${data.kostnad}</p><span></span><p>${data.belopp.toLocaleString("sv-SE")} kr</p></div>`;
+      costs.innerHTML += `<tr><td>${data.kostnad}</td><td>${data.belopp.toLocaleString("sv-SE")} kr</td></tr>`;
     });
+    // Total Cost
+    const total = kostnadInfo.reduce((sum, data) => sum + data.belopp, 0);
+    document.getElementById("total-cost").textContent = `${total.toLocaleString("sv-SE")} kr`;
   }
 
 
@@ -191,14 +200,17 @@ class FormWizard {
 
   // Add/Remove input field
   handleDynamicFields(buttonId, containerId, getFieldsFn) {
-    let index = 1;
     const button = document.getElementById(buttonId);
     const wrapper = document.getElementById(containerId);
 
-    button.addEventListener("click", () => {
+    let indexRef = buttonId === "add-control" ? "userIndex" : "kostnadIndex";
+
+    // Avoid double event attachment
+    button.onclick = () => {
+      const i = this[indexRef]++;
       const div = document.createElement("div");
       div.className = "multi-form-control";
-      div.innerHTML = getFieldsFn(index++);
+      div.innerHTML = getFieldsFn(i);
       wrapper.appendChild(div);
       this.updateUI();
 
@@ -210,8 +222,9 @@ class FormWizard {
 
       this.updateBetalareDropdowns();
       this.toggleProcentsatsFields();
-    });
+    };
 
+    // Remove logic (already correct)
     wrapper.addEventListener("click", e => {
       if (e.target.classList.contains("remove-btn")) {
         e.target.closest(".multi-form-control")?.remove();
@@ -249,4 +262,50 @@ class FormWizard {
 document.addEventListener("DOMContentLoaded", () => {
   const instance = new FormWizard(".form-wizard");
   document.querySelector(".form-wizard").formWizardInstance = instance;
+});
+
+document.getElementById("export-pdf")?.addEventListener("click", () => {
+  const jsPDF = window.jspdf.jsPDF;
+  const doc = new jsPDF();
+
+  const form = document.querySelector(".form-wizard").formWizardInstance;
+  if (!form) return;
+
+  const userInfo = form.userInfo || [];
+  const kostnadInfo = form.kostnadInfo || [];
+
+  // Title
+  doc.setFontSize(18);
+  doc.text("Månadsbudgetrapport", 20, 20);
+
+  // Users
+  doc.setFontSize(12);
+  doc.text("Användare:", 20, 35);
+  let y = 45;
+
+  userInfo.forEach(user => {
+    const remaining = user.value - kostnadInfo.reduce((sum, cost) => {
+      return sum + (cost.betalare === user.name ? cost.belopp : 0);
+    }, 0);
+    doc.text(`${user.name} (${user.procentsats}%): ${remaining.toLocaleString("sv-SE")} kr kvar`, 25, y);
+    y += 8;
+  });
+
+  // Costs
+  y += 10;
+  doc.text("Kostnader:", 20, y);
+  y += 10;
+
+  kostnadInfo.forEach(cost => {
+    doc.text(`${cost.kostnad}: ${cost.belopp.toLocaleString("sv-SE")} kr (Betalare: ${cost.betalare})`, 25, y);
+    y += 8;
+  });
+
+  // Total
+  const total = kostnadInfo.reduce((sum, item) => sum + item.belopp, 0);
+  y += 10;
+  doc.setFont(undefined, 'bold');
+  doc.text(`Totala utgifter: ${total.toLocaleString("sv-SE")} kr`, 20, y);
+
+  doc.save("Månadsbudget.pdf");
 });
