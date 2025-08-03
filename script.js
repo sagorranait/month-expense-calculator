@@ -3,6 +3,7 @@ class FormWizard {
   constructor(formSelector) {
     this.userIndex = 2;
     this.kostnadIndex = 1;
+    this.costSplit = "proportionell"; // Default
     this.form = document.querySelector(formSelector);
     this.steps = [...this.form.querySelectorAll(".step")];
     this.stepIndicators = [...this.form.querySelectorAll(".progress-container li")];
@@ -14,6 +15,13 @@ class FormWizard {
     this.currentStep = 0;
 
     document.documentElement.style.setProperty("--steps", this.stepIndicators.length);
+    // Add change listener
+    this.form.querySelectorAll('input[name="costSplit"]').forEach(radio => {
+      radio.addEventListener("change", () => {
+        this.costSplit = radio.value;
+        this.toggleProcentsatsInputs(); // Apply to all current inputs
+      });
+    });
     this.init();
   }
 
@@ -215,39 +223,74 @@ class FormWizard {
     });
   }
 
+  updateBetalareOptions() {
+    const users = [];
+    document.querySelectorAll('input[name^="username"]').forEach(input => {
+      const name = input.value.trim();
+      if (name && !users.includes(name)) {
+        users.push(name);
+      }
+    });
+
+    const betalareContainer = document.getElementById("betalare");
+    if (!betalareContainer) return;
+
+    // Clear current radios
+    betalareContainer.innerHTML = "";
+
+    users.forEach((user, i) => {
+      const label = document.createElement("label");
+      label.innerHTML = `
+        <input type="radio" name="betalare[0]" value="${user}"> ${user}
+      `;
+      betalareContainer.appendChild(label);
+    });
+  }
+
+
   // Add/Remove input field
   handleDynamicFields(buttonId, containerId, getFieldsFn) {
     const button = document.getElementById(buttonId);
     const wrapper = document.getElementById(containerId);
-
     let indexRef = buttonId === "add-control" ? "userIndex" : "kostnadIndex";
 
-    // Avoid double event attachment
     button.onclick = () => {
       const i = this[indexRef]++;
       const div = document.createElement("div");
       div.className = "multi-form-control";
-      div.innerHTML = getFieldsFn(i);
-      wrapper.appendChild(div);
-      this.updateUI();
+      div.innerHTML = getFieldsFn.call(this, i);
 
-      if (buttonId === "add-control") {
-        div.querySelectorAll('input[name^="username"]').forEach(input =>
-          input.addEventListener("input", () => this.updateBetalareDropdowns())
-        );
-      }
-
-      this.updateBetalareDropdowns();
-      this.toggleProcentsatsFields();
-    };
-
-    // Remove logic (already correct)
-    wrapper.addEventListener("click", e => {
-      if (e.target.classList.contains("remove-btn")) {
-        e.target.closest(".multi-form-control")?.remove();
-        this.updateUI();
+      // Add remove button event
+      const removeBtn = div.querySelector(".remove-btn");
+      removeBtn.addEventListener("click", () => {
+        div.remove();
         this.updateBetalareDropdowns();
+        this.updateBetalareOptions(); // ✅ Keep radio options updated
+      });
+
+      // Listen to username input to update dropdowns + radios
+      const usernameInput = div.querySelector('input[name^="username"]');
+      if (usernameInput) {
+        usernameInput.addEventListener("input", () => {
+          this.updateBetalareDropdowns();
+          this.updateBetalareOptions(); // ✅ Sync radio buttons
+          this.toggleProcentsatsInputs(); // 👈 Ensures new user respects the costSplit mode
+        });
       }
+
+      wrapper.appendChild(div);
+
+      // Update dropdowns and radio options immediately
+      this.updateBetalareDropdowns();
+      this.updateBetalareOptions(); // ✅ Add here
+      this.toggleProcentsatsInputs(); // ✅ Add this
+    };
+  }
+
+  toggleProcentsatsInputs() {
+    const show = this.costSplit !== "50-50";
+    this.form.querySelectorAll(".procentsats-wrapper").forEach(wrapper => {
+      wrapper.style.display = show ? "block" : "none";
     });
   }
 
@@ -274,7 +317,6 @@ class FormWizard {
       <div class="multi-kostnad-input">
         <input type="text" name="kostnad[${i}]" pattern="^[A-Za-zÅÄÖåäö]+$" placeholder="Kostnad" required />
         <input type="text" name="belopp[${i}]" pattern="^\\d+(\\s\\d+)*$" placeholder="Belopp" required />
-        <select name="betalare[${i}]"></select>
       </div>
       <button type="button" class="remove-btn">-</button>
     `;
@@ -284,4 +326,8 @@ class FormWizard {
 document.addEventListener("DOMContentLoaded", () => {
   const instance = new FormWizard(".form-wizard");
   document.querySelector(".form-wizard").formWizardInstance = instance;
+
+   // ✅ Initial setup of radio buttons after loading
+  instance.updateBetalareOptions();
+  instance.toggleProcentsatsInputs(); // ✅ Set initial visibility
 });
