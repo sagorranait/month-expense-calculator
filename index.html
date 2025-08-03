@@ -49,8 +49,18 @@
             </div>
 
           <div id="multi-form" class="form-control">
+              <div class="multi-kostnad-input-label">
+                <label for="username-1">Namn</label>
+                <label for="belopp-1">Typ av inkomst</label>
+                <label for="usersellery">Belopp</label>
+              </div>
               <div class="multi-form-control">
                 <input type="text" id="username-1" name="username[0]" pattern="^[A-Za-zÅÄÖåäö]+$" value="Jennie" placeholder="Name" required="">
+                <select name="incometype[0]" id="incometype">
+                  <option value="Nettoinkomst">Nettoinkomst</option>
+                  <option value="Skatteåterbäring">Skatteåterbäring</option>
+                  <option value="Andra">Andra</option>
+                </select>
                 <input type="text" id="usersellery-1" name="usersellery[0]" pattern="^(\d+\s?)+$" placeholder="kr" required="">
                 <div class="procentsats-wrapper" style="display: none;">
                   <input type="text" id="procentsats" name="procentsats[0]" placeholder="%" maxlength="3">
@@ -58,6 +68,11 @@
               </div>
               <div class="multi-form-control">
                 <input type="text" id="username-2" name="username[1]" pattern="^[A-Za-zÅÄÖåäö]+$" value="Alexander" placeholder="Name" required="">
+                <select name="incometype[1]" id="incometype">
+                  <option value="Nettoinkomst">Nettoinkomst</option>
+                  <option value="Skatteåterbäring">Skatteåterbäring</option>
+                  <option value="Andra">Andra</option>
+                </select>
                 <input type="text" id="usersellery-2" name="usersellery[1]" pattern="^(\d+\s?)+$" placeholder="kr" required="">
                 <div class="procentsats-wrapper" style="display: none;">
                   <input type="text" id="procentsats" name="procentsats[1]" placeholder="%" maxlength="3">

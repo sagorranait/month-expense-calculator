@@ -251,6 +251,15 @@ button#remove-control {
     padding: 5px 10px;
 }
 
+.procentsats-wrapper input {
+  width: 100% !important;
+  text-align: center;
+}
+
+.procentsats-wrapper{
+  width: 10%;
+}
+
 .multi-form-control input, 
 .multi-form-control select {
     width: 40%;
@@ -307,7 +316,7 @@ button#remove-control {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-    width: 93%;
+    width: 100%;
 }
 
 .multi-kostnad-input-label label {
@@ -318,10 +327,6 @@ button#remove-control {
 input#procentsats {
     width: 100%;
     text-align: center;
-}
-
-.procentsats-wrapper {
-    width: 8%;
 }
 
 .export-buttons {

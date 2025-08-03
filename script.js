@@ -111,9 +111,10 @@ class FormWizard {
 
     this.form.querySelectorAll("#multi-form .multi-form-control").forEach(row => {
       const name = row.querySelector('input[name^="username"]')?.value.trim();
+      const type = row.querySelector('select[name^="incometype"]')?.value || "";
       const value = Number(row.querySelector('input[name^="usersellery"]')?.value.replace(/\s/g, "") || 0);
       const procentsats = costSplit === "50-50" ? "50" : row.querySelector('#procentsats')?.value;
-      if (name) result.userInfo.push({ name, value, procentsats });
+      if (name) result.userInfo.push({ name, type, value, procentsats });
     });
 
     Object.entries(raw).forEach(([key, val]) => {
@@ -127,7 +128,8 @@ class FormWizard {
         });
       }
     });
-
+    console.log(result);
+    
     this.userInfo = result.userInfo;
     this.kostnadInfo = result.kostnadInfo;
     this.showResultat(result);    
@@ -250,6 +252,11 @@ class FormWizard {
   getUserFields(i) {
     return `
       <input type="text" name="username[${i}]" pattern="^[A-Za-zÅÄÖåäö]+$" placeholder="Name" required />
+      <select name="incometype[${i}]" id="incometype">
+        <option value="Nettoinkomst">Nettoinkomst</option>
+        <option value="Skatteåterbäring">Skatteåterbäring</option>
+        <option value="Andra">Andra</option>
+      </select>
       <input type="text" name="usersellery[${i}]" pattern="^\\d+(\\s\\d+)*$" placeholder="kr" required />
       <div class="procentsats-wrapper">
         <input type="text" name="procentsats[${i}]" placeholder="%" maxlength="3" />
