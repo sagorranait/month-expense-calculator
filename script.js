@@ -113,7 +113,10 @@ class FormWizard {
       const name = row.querySelector('input[name^="username"]')?.value.trim();
       const type = row.querySelector('select[name^="incometype"]')?.value || "";
       const value = Number(row.querySelector('input[name^="usersellery"]')?.value.replace(/\s/g, "") || 0);
-      const procentsats = costSplit === "50-50" ? "50" : row.querySelector('#procentsats')?.value;
+      // const procentsats = costSplit === "50-50" ? "50" : row.querySelector('#procentsats')?.value;
+      const totalUsers = this.form.querySelectorAll("#multi-form .multi-form-control").length;
+      const procentsats = costSplit === "50-50" ? (100 / totalUsers).toFixed(2) : row.querySelector('input[name^="procentsats"]')?.value;
+
       if (name) result.userInfo.push({ name, type, value, procentsats });
     });
 
