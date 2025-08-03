@@ -15,7 +15,6 @@
       <!-- .progress-container -->
       <div class="progress-container">
         <div class="progress" style="transform: scaleX(0);"></div>
-
         <ol>
           <li class="current">Modell</li>
           <li>Inkomster</li>
@@ -80,24 +79,24 @@
               </div>
           </div>
         </div>
-        <div class="step">
-          
+        <div class="step">          
           <div class="multi-form-header">
               <h3>Kostnader</h3>
+              <div class="controls-radio">
+                <label for="betalare">Betalare:</label>
+                <div id="betalare"><label><input type="radio" name="betalare[0]" value="Jennie"> Jennie</label><label><input type="radio" name="betalare[0]" value="Alexander"> Alexander</label></div>
+              </div>
               <button type="button" id="add-kostnad">+ Lägg till kostnad</button>
           </div>
-
           <div id="multi-kostnad-form" class="form-control">
-            <div class="multi-kostnad-input-label">
+            <div class="multi-kostnad-input-label" style="width: 70%;">
               <label for="kostnad-1">Kostnad</label>
               <label for="belopp-1">Belopp</label>
-              <label for="betalare">Betalare</label>
             </div>
             <div class="multi-form-control">
               <div class="multi-kostnad-input">
                 <input type="text" id="kostnad-1" name="kostnad[0]" placeholder="Kostnad" pattern="^[A-Za-zÅÄÖåäö]+$" required="">
                 <input type="text" id="belopp-1" name="belopp[0]" placeholder="Belopp" pattern="^(\d+\s?)+$" required="">
-                 <div id="betalare"><label><input type="radio" name="betalare[0]" value="Jennie"> Jennie</label><label><input type="radio" name="betalare[0]" value="Alexander"> Alexander</label></div>
               </div>
             </div>
           </div>

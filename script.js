@@ -139,6 +139,7 @@ class FormWizard {
         });
       }
     });
+
     console.log(result);
     
     this.userInfo = result.userInfo;
@@ -148,52 +149,99 @@ class FormWizard {
 
   // Showing the Resultat
   showResultat({ userInfo, kostnadInfo }) {
-    const dots = document.getElementById('legend-dots');
-    const chart = document.getElementById('user-chart');
-    const costs = document.getElementById('costs-list');
-    const users = document.getElementById('resultat-user');
+  const dots = document.getElementById('legend-dots');
+  const chart = document.getElementById('user-chart');
+  const costs = document.getElementById('costs-list');
+  const users = document.getElementById('resultat-user');
 
-    const colors = ['#c41e67', '#a71555', '#ced7e0', '#470a0a', '#b21c0e'];
+  const colors = ['#c41e67', '#a71555', '#ced7e0', '#470a0a', '#b21c0e'];
 
-    dots.innerHTML = '';
-    users.innerHTML = '';
-    costs.innerHTML = '';
+  dots.innerHTML = '';
+  users.innerHTML = '';
+  costs.innerHTML = '';
 
-    let gradient = [];
-    let start = 0;
-    // User Information
-    userInfo.forEach((user, i) => {
-      const percent = parseFloat(user.procentsats);
-      const color = colors[i % colors.length];
-      const end = start + percent;
+  const total = kostnadInfo.reduce((sum, data) => sum + parseFloat(data.belopp || 0), 0);
 
-      const costPercent = parseFloat(user.procentsats) / 100 || 0;
-      let remaining = user.value;
+  let gradient = [];
+  let start = 0;
 
-      kostnadInfo.forEach(cost => {
-        const costShare = cost.belopp * (percent / 100);
-        remaining -= costShare;
-      });
+  userInfo.forEach((user, i) => {
+    const percent = parseFloat(user.procentsats) || 0;
+    const color = colors[i % colors.length];
+    const end = start + percent;
 
-      console.log(Math.round(remaining));
-      
+    const skaBetala = Math.round((total * percent) / 100);
+    const balance = Math.round(parseFloat(user.value || 0));
+    const diff = balance - skaBetala;
 
-      users.innerHTML += `<div class="card"><h3>${user.name}</h3><p class="amount">${Math.round(remaining).toLocaleString("sv-SE")} kr</p><p class="label">kvar efter utgifter</p></div>`;
-      dots.innerHTML += `<span><span class="dot" style="background-color:${color}"></span>${user.name} (${user.procentsats}%)</span>`;
+    user.skaBetala = skaBetala;
+    user.balance = balance;
+    user.diff = diff;
 
-      gradient.push(`${color} ${start}% ${end}%`);
-      start = end;
-    });
-    // Chart Color
-    chart.style.background = `conic-gradient(${gradient.join(', ')})`;
-    // Cost List
-    kostnadInfo.forEach((data) => {
-      costs.innerHTML += `<tr><td>${data.kostnad}</td><td>${data.belopp.toLocaleString("sv-SE")} kr</td></tr>`;
-    });
-    // Total Cost
-    const total = kostnadInfo.reduce((sum, data) => sum + data.belopp, 0);
-    document.getElementById("total-cost").textContent = `${total.toLocaleString("sv-SE")} kr`;
+    users.innerHTML += `
+      <div class="card">
+        <h3>${user.name}</h3>
+        <p class="label">Ska betala</p>
+        <p class="amount">${skaBetala.toLocaleString("sv-SE")} kr</p>
+
+        <p class="label">Kvar efter utgifter</p>
+        <p class="amount ${diff >= 0 ? 'plus' : 'minus'}">
+          ${(diff >= 0 ? '+' : '') + diff.toLocaleString("sv-SE")} kr
+        </p>
+      </div>
+    `;
+
+    dots.innerHTML += `
+      <span><span class="dot" style="background-color:${color}"></span>${user.name} (${percent}%)</span>
+    `;
+
+    gradient.push(`${color} ${start}% ${end}%`);
+    start = end;
+  });
+
+  chart.style.background = `conic-gradient(${gradient.join(', ')})`;
+
+  kostnadInfo.forEach((data) => {
+    costs.innerHTML += `<tr><td>${data.kostnad}</td><td>${parseFloat(data.belopp || 0).toLocaleString("sv-SE")} kr</td></tr>`;
+  });
+
+  document.getElementById("total-cost").textContent = `${total.toLocaleString("sv-SE")} kr`;
+
+  // Swish suggestion
+  const owes = userInfo.filter(u => u.diff < 0);
+  const gets = userInfo.filter(u => u.diff > 0);
+
+  const swishList = [];
+
+  let owesIndex = 0;
+  let getsIndex = 0;
+
+  while (owesIndex < owes.length && getsIndex < gets.length) {
+    let owe = owes[owesIndex];
+    let get = gets[getsIndex];
+
+    const amount = Math.min(Math.abs(owe.diff), get.diff);
+
+    if (amount > 0) {
+      swishList.push(`${owe.name} ska swisha ${amount.toLocaleString("sv-SE")} kr till ${get.name}`);
+      owe.diff += amount;
+      get.diff -= amount;
+    }
+
+    if (Math.abs(owe.diff) < 1) owesIndex++;
+    if (Math.abs(get.diff) < 1) getsIndex++;
   }
+
+  if (swishList.length > 0) {
+    users.innerHTML += `
+      <div class="card full">
+        <h3>Swish-förslag</h3>
+        <ul>${swishList.map(msg => `<li>${msg}</li>`).join('')}</ul>
+      </div>
+    `;
+  }
+}
+
 
 
   // Select input functionality

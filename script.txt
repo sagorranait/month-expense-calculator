@@ -1,0 +1,47 @@
+  // showResultat({ userInfo, kostnadInfo }) {
+  //   const dots = document.getElementById('legend-dots');
+  //   const chart = document.getElementById('user-chart');
+  //   const costs = document.getElementById('costs-list');
+  //   const users = document.getElementById('resultat-user');
+
+  //   const colors = ['#c41e67', '#a71555', '#ced7e0', '#470a0a', '#b21c0e'];
+
+  //   dots.innerHTML = '';
+  //   users.innerHTML = '';
+  //   costs.innerHTML = '';
+
+  //   let gradient = [];
+  //   let start = 0;
+  //   // User Information
+  //   userInfo.forEach((user, i) => {
+  //     const percent = parseFloat(user.procentsats);
+  //     const color = colors[i % colors.length];
+  //     const end = start + percent;
+
+  //     const costPercent = parseFloat(user.procentsats) / 100 || 0;
+  //     let remaining = user.value;
+
+  //     kostnadInfo.forEach(cost => {
+  //       const costShare = cost.belopp * (percent / 100);
+  //       remaining -= costShare;
+  //     });
+
+  //     console.log(Math.round(remaining));
+      
+
+  //     users.innerHTML += `<div class="card"><h3>${user.name}</h3><p class="amount">${Math.round(remaining).toLocaleString("sv-SE")} kr</p><p class="label">kvar efter utgifter</p></div>`;
+  //     dots.innerHTML += `<span><span class="dot" style="background-color:${color}"></span>${user.name} (${user.procentsats}%)</span>`;
+
+  //     gradient.push(`${color} ${start}% ${end}%`);
+  //     start = end;
+  //   });
+  //   // Chart Color
+  //   chart.style.background = `conic-gradient(${gradient.join(', ')})`;
+  //   // Cost List
+  //   kostnadInfo.forEach((data) => {
+  //     costs.innerHTML += `<tr><td>${data.kostnad}</td><td>${data.belopp.toLocaleString("sv-SE")} kr</td></tr>`;
+  //   });
+  //   // Total Cost
+  //   const total = kostnadInfo.reduce((sum, data) => sum + data.belopp, 0);
+  //   document.getElementById("total-cost").textContent = `${total.toLocaleString("sv-SE")} kr`;
+  // }
