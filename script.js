@@ -1,7 +1,7 @@
 // Optimized FormWizard class
 class FormWizard {
   constructor(formSelector) {
-    this.userIndex = 1;
+    this.userIndex = 2;
     this.kostnadIndex = 1;
     this.form = document.querySelector(formSelector);
     this.steps = [...this.form.querySelectorAll(".step")];
@@ -41,6 +41,19 @@ class FormWizard {
       this.updateBetalareDropdowns();
       this.toggleProcentsatsFields();
     }, 50);
+
+    this.stepIndicators.forEach((li, i) => {
+      li.addEventListener("click", () => {
+        if (i !== this.currentStep && this.isValidStep()) {
+          this.currentStep = i;
+          this.updateUI();
+
+          if (i === this.steps.length - 1) {
+            this.handleSubmit(new Event("submit", { cancelable: true }));
+          }
+        }
+      });
+    });
   }
 
   handleFocus(e) {
@@ -63,9 +76,10 @@ class FormWizard {
       el.classList.toggle("done", i < this.currentStep);
     });
 
-    this.prevButton.hidden = this.currentStep === 0;
-    this.nextButton.hidden = this.currentStep >= this.steps.length - 1;
-    this.submitButton.hidden = !this.nextButton.hidden;
+    this.prevButton.style.display = this.currentStep === 0 ? "none" : "inline-block";
+    this.nextButton.style.display = this.currentStep >= this.steps.length - 1 ? "none" : "inline-block";
+    this.submitButton.style.display = this.currentStep >= this.steps.length - 1 ? "none" : "none";
+
   }
 
   isValidStep() {
@@ -78,12 +92,17 @@ class FormWizard {
     if (direction === -1 || (direction === 1 && this.isValidStep())) {
       this.currentStep += direction;
       this.updateUI();
+
+      if (this.currentStep === this.steps.length - 1) {
+        this.handleSubmit(new Event("submit", { cancelable: true }));
+      }
     }
   }
 
+
   // Form Submition
   handleSubmit(e) {
-    e.preventDefault();
+    if (e?.preventDefault) e.preventDefault();
     if (!this.form.checkValidity()) return;
 
     const raw = Object.fromEntries(new FormData(this.form));
@@ -92,7 +111,7 @@ class FormWizard {
 
     this.form.querySelectorAll("#multi-form .multi-form-control").forEach(row => {
       const name = row.querySelector('input[name^="username"]')?.value.trim();
-      const value = Number(row.querySelector('input[name^="usersellery"]')?.value || 0);
+      const value = Number(row.querySelector('input[name^="usersellery"]')?.value.replace(/\s/g, "") || 0);
       const procentsats = costSplit === "50-50" ? "50" : row.querySelector('#procentsats')?.value;
       if (name) result.userInfo.push({ name, value, procentsats });
     });
@@ -103,22 +122,15 @@ class FormWizard {
         const i = match[1];
         result.kostnadInfo.push({
           kostnad: val,
-          belopp: Number(raw[`belopp[${i}]`] || 0),
+          belopp: Number((raw[`belopp[${i}]`] || "0").replace(/\s/g, "")),
           betalare: raw[`betalare[${i}]`] || ""
         });
       }
     });
 
-    console.log(result);
-
     this.userInfo = result.userInfo;
     this.kostnadInfo = result.kostnadInfo;
-
-
-    this.showResultat(result);
-    this.submitButton.disabled = true;
-    this.submitButton.textContent = "Resulterande...";
-    setTimeout(() => this.form.querySelector(".resultat").hidden = false, 2000);
+    this.showResultat(result);    
   }
 
   // Showing the Resultat
@@ -237,8 +249,8 @@ class FormWizard {
   // Add new User input 
   getUserFields(i) {
     return `
-      <input type="text" name="username[${i}]" pattern="^[A-Za-z]+$" placeholder="Name" required />
-      <input type="number" name="usersellery[${i}]" placeholder="kr" required />
+      <input type="text" name="username[${i}]" pattern="^[A-Za-zÅÄÖåäö]+$" placeholder="Name" required />
+      <input type="text" name="usersellery[${i}]" pattern="^\\d+(\\s\\d+)*$" placeholder="kr" required />
       <div class="procentsats-wrapper">
         <input type="text" name="procentsats[${i}]" placeholder="%" maxlength="3" />
       </div>
@@ -250,8 +262,8 @@ class FormWizard {
   getKostnadFields(i) {
     return `
       <div class="multi-kostnad-input">
-        <input type="text" name="kostnad[${i}]" pattern="^[A-Za-z]+$" placeholder="Kostnad" required />
-        <input type="number" name="belopp[${i}]" placeholder="Belopp" required />
+        <input type="text" name="kostnad[${i}]" pattern="^[A-Za-zÅÄÖåäö]+$" placeholder="Kostnad" required />
+        <input type="text" name="belopp[${i}]" pattern="^\\d+(\\s\\d+)*$" placeholder="Belopp" required />
         <select name="betalare[${i}]"></select>
       </div>
       <button type="button" class="remove-btn">-</button>
@@ -262,50 +274,4 @@ class FormWizard {
 document.addEventListener("DOMContentLoaded", () => {
   const instance = new FormWizard(".form-wizard");
   document.querySelector(".form-wizard").formWizardInstance = instance;
-});
-
-document.getElementById("export-pdf")?.addEventListener("click", () => {
-  const jsPDF = window.jspdf.jsPDF;
-  const doc = new jsPDF();
-
-  const form = document.querySelector(".form-wizard").formWizardInstance;
-  if (!form) return;
-
-  const userInfo = form.userInfo || [];
-  const kostnadInfo = form.kostnadInfo || [];
-
-  // Title
-  doc.setFontSize(18);
-  doc.text("Månadsbudgetrapport", 20, 20);
-
-  // Users
-  doc.setFontSize(12);
-  doc.text("Användare:", 20, 35);
-  let y = 45;
-
-  userInfo.forEach(user => {
-    const remaining = user.value - kostnadInfo.reduce((sum, cost) => {
-      return sum + (cost.betalare === user.name ? cost.belopp : 0);
-    }, 0);
-    doc.text(`${user.name} (${user.procentsats}%): ${remaining.toLocaleString("sv-SE")} kr kvar`, 25, y);
-    y += 8;
-  });
-
-  // Costs
-  y += 10;
-  doc.text("Kostnader:", 20, y);
-  y += 10;
-
-  kostnadInfo.forEach(cost => {
-    doc.text(`${cost.kostnad}: ${cost.belopp.toLocaleString("sv-SE")} kr (Betalare: ${cost.betalare})`, 25, y);
-    y += 8;
-  });
-
-  // Total
-  const total = kostnadInfo.reduce((sum, item) => sum + item.belopp, 0);
-  y += 10;
-  doc.setFont(undefined, 'bold');
-  doc.text(`Totala utgifter: ${total.toLocaleString("sv-SE")} kr`, 20, y);
-
-  doc.save("Månadsbudget.pdf");
 });

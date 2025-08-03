@@ -6,15 +6,9 @@
   margin: 0;
   box-sizing: border-box;
 }
-
-body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: lavender;
-  color: #333;
+.g-deladekonomi-form {
+    width: 100% !important;
+    justify-items: center;
 }
 
 .form-wizard h1 {
@@ -35,7 +29,7 @@ body {
 .form-wizard input,
 .form-wizard select,
 .form-wizard textarea {
-  outline-color: #c41e67;
+  outline-color: #d64661;
   border: 1px solid lightgray;
   padding: 15px;
   border-radius: 50px;
@@ -55,8 +49,8 @@ body {
     margin-top: 10px;
 }
 .form-control label.radio:has(input[type="radio"]:checked) {
-  border: 1px solid #a71555;
-  background: #a71555;
+  border: 1px solid #d64661;
+  background: #d64661;
   color: #fff;
 }
 
@@ -73,7 +67,7 @@ body {
 }
 
 label.radio input[type="radio"]:checked {
-  accent-color: #c41e67;
+  accent-color: #d64661;
 }
 
 .form-wizard input[type="tel"] {
@@ -89,7 +83,7 @@ label.radio input[type="radio"]:checked {
   border: none;
   border-radius: 50px;
   padding: 10px 16px;
-  background-color: #c41e67;
+  background-color: #d64661;
   color: #fff;
   font-size: 0.875rem;
   transition: 0.3s;
@@ -127,7 +121,7 @@ label.radio input[type="radio"]:checked {
   background-color: #fff;
   padding: 1.5rem;
   border-radius: 8px;
-  width: min(800px, 90%);
+  width: 980px;
   box-shadow: 0 4px 16px rgba(167, 21, 84, 0.1);
 }
 
@@ -149,7 +143,7 @@ label.radio input[type="radio"]:checked {
 .progress-container .progress {
   height: 4px;
   width: calc((3.8 - 1) / 4 * 100%);
-  background-color: #c41e67;
+  background-color: #d64661;
   position: absolute;
   top: calc(32px / 2);
   left: 50%;
@@ -214,11 +208,11 @@ html[dir="rtl"] .progress-container .progress {
 }
 
 .progress-container li.done::before {
-  background-color: #c41e67;
+  background-color: #d64661;
 }
 
 .progress-container li.current::before {
-  background-color: #c41e67;
+  background-color: #d64661;
   box-shadow: 0 0 0 3px rgba(167, 21, 84, 0.25);
 }
 
@@ -284,7 +278,7 @@ button#remove-control {
 
 .resultat svg {
   width: 19px;
-  stroke: #c41e67;
+  stroke: #d64661;
 }
 
 .resultat:not([hidden]) ~ * {
@@ -292,9 +286,9 @@ button#remove-control {
 }
 
 .form-wizard select {
-  background: url(/down-arrow.png) no-repeat right #fff;
+  background: url(/wp-content/uploads/2025/06/down-arrow.png) no-repeat right #fff;
   -webkit-appearance: none;
-  background-position-x: 190px;
+  background-position-x: 244px;
   background-size: 28px;
 }
 
@@ -539,7 +533,7 @@ input#procentsats {
 
 .budget-table th,
 .budget-table td {
-  border: 1px solid #c41e67;
+  border: 1px solid #d64661;
   padding: 0.75rem;
   text-align: left;
 }
