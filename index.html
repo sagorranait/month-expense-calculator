@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Multistep Form</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-    <script src="script.js" defer></script>
+    <script src="./script.js"></script>
   </head>
   <body>
 <form class="form-wizard">
@@ -54,11 +54,10 @@
                 <label for="usersellery">Belopp</label>
               </div>
               <div class="multi-form-control">
-                <input type="text" id="username-1" name="username[0]" pattern="^[A-Za-zÅÄÖåäö]+$" value="Jennie" placeholder="Name" required="">
+                <input type="text" id="username-1" name="username[0]" pattern="^[A-Za-zÅÄÖåäö]+$"  placeholder="Name" required="">
                 <select name="incometype[0]" id="incometype">
-                  <option value="Nettoinkomst">Nettoinkomst</option>
-                  <option value="Skatteåterbäring">Skatteåterbäring</option>
-                  <option value="Andra">Andra</option>
+                  <option value="efter-skatt">Efter skatt</option>
+                  <option value="före-skatt">Före skatt</option>
                 </select>
                 <input type="text" id="usersellery-1" name="usersellery[0]" pattern="^(\d+\s?)+$" placeholder="kr" required="">
                 <div class="procentsats-wrapper" style="display: none;">
@@ -66,11 +65,10 @@
                 </div>
               </div>
               <div class="multi-form-control">
-                <input type="text" id="username-2" name="username[1]" pattern="^[A-Za-zÅÄÖåäö]+$" value="Alexander" placeholder="Name" required="">
+                <input type="text" id="username-2" name="username[1]" pattern="^[A-Za-zÅÄÖåäö]+$" placeholder="Name" required="">
                 <select name="incometype[1]" id="incometype">
-                  <option value="Nettoinkomst">Nettoinkomst</option>
-                  <option value="Skatteåterbäring">Skatteåterbäring</option>
-                  <option value="Andra">Andra</option>
+                  <option value="efter-skatt">Efter skatt</option>
+                  <option value="före-skatt">Före skatt</option>
                 </select>
                 <input type="text" id="usersellery-2" name="usersellery[1]" pattern="^(\d+\s?)+$" placeholder="kr" required="">
                 <div class="procentsats-wrapper" style="display: none;">
@@ -82,21 +80,22 @@
         <div class="step">          
           <div class="multi-form-header">
               <h3>Kostnader</h3>
-              <div class="controls-radio">
-                <label for="betalare">Betalare:</label>
-                <div id="betalare"><label><input type="radio" name="betalare[0]" value="Jennie"> Jennie</label><label><input type="radio" name="betalare[0]" value="Alexander"> Alexander</label></div>
-              </div>
               <button type="button" id="add-kostnad">+ Lägg till kostnad</button>
           </div>
           <div id="multi-kostnad-form" class="form-control">
-            <div class="multi-kostnad-input-label" style="width: 70%;">
+            <div class="multi-kostnad-input-label" style="width: 93%;">
               <label for="kostnad-1">Kostnad</label>
               <label for="belopp-1">Belopp</label>
+              <label for="betalare">Betalare</label>
             </div>
             <div class="multi-form-control">
               <div class="multi-kostnad-input">
                 <input type="text" id="kostnad-1" name="kostnad[0]" placeholder="Kostnad" pattern="^[A-Za-zÅÄÖåäö]+$" required="">
                 <input type="text" id="belopp-1" name="belopp[0]" placeholder="Belopp" pattern="^(\d+\s?)+$" required="">
+                <div class="betalare-checkboxes" data-index="0">
+                  <label><input type="checkbox" name="betalare[0][]" value="Jennie" /> Jennie</label>
+                  <label><input type="checkbox" name="betalare[0][]" value="Alexander" /> Alexander</label>
+                </div>
               </div>
             </div>
           </div>
@@ -120,7 +119,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"></path>
                   </svg>
                 </span>
-                Dela länk
+                Hjälp
               </a>
             </div>
           </div>
